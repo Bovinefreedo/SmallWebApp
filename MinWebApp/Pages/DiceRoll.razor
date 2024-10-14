@@ -1,0 +1,28 @@
+﻿@page "/diceroll"
+<h3 style="color:tomato">Dice</h3>
+
+Hello, welcome to the big dice enterprise site for dice
+
+<p>my name is @name</p>
+
+<button class="btn btn-primary" @onclick="RollDice">Roll the dice</button>
+
+<p>The dice shows @_eyes</p>
+<p>
+    <img src ="@imgSource" />
+</p>
+
+@code {
+    private string name = "Mr. Big Shot";
+    private DiceIMPL dice = new DiceIMPL();
+    private int _eyes = 1;
+    private string imgSource = "/dice/dice0.png";
+
+    public void RollDice()
+    {
+        dice.roll();
+        _eyes = dice.getEyes();
+        imgSource = $"/dice/dice{_eyes}.png";
+    }
+
+}

@@ -1,0 +1,47 @@
+﻿[
+  {
+    "date": "2022-01-06",
+    "temperatureC": 1,
+    "summary": "Freezing"
+  },
+  {
+    "date": "2022-01-07",
+    "temperatureC": 14,
+    "summary": "Bracing"
+  },
+  {
+    "date": "2022-01-08",
+    "temperatureC": -13,
+    "summary": "Freezing"
+  },
+  {
+    "date": "2022-01-09",
+    "temperatureC": -16,
+    "summary": "Balmy"
+  },
+  {
+    "date": "2022-01-10",
+    "temperatureC": -2,
+    "summary": "Chilly"
+  }, 
+   { "date": "2024-10-07", "temperatureC": -2, "summary": "Bracing" },
+   { "date": "2024-10-08", "temperatureC": -8, "summary": "Scorching" },
+   { "date": "2024-10-09", "temperatureC": -1, "summary": "Bracing" },
+   { "date": "2024-10-10", "temperatureC": 25, "summary": "Warm" },
+   { "date": "2024-10-11", "temperatureC": 18, "summary": "Bracing" },
+   { "date": "2024-10-12", "temperatureC": -4, "summary": "Cool" },
+   { "date": "2024-10-13", "temperatureC": 4, "summary": "Freezing" },
+   { "date": "2024-10-14", "temperatureC": -9, "summary": "Mild" },
+   { "date": "2024-10-15", "temperatureC": -4, "summary": "Cool" },
+   { "date": "2024-10-16", "temperatureC": 39, "summary": "Freezing" },
+   { "date": "2024-10-17", "temperatureC": -6, "summary": "Chilly" },
+   { "date": "2024-10-18", "temperatureC": 30, "summary": "Bracing" },
+   { "date": "2024-10-19", "temperatureC": 9, "summary": "Bracing" },
+   { "date": "2024-10-20", "temperatureC": 37, "summary": "Scorching" },
+   { "date": "2024-10-21", "temperatureC": 6, "summary": "Warm" },
+   { "date": "2024-10-22", "temperatureC": 22, "summary": "Bracing" },
+   { "date": "2024-10-23", "temperatureC": 9, "summary": "Warm" },
+   { "date": "2024-10-24", "temperatureC": 0, "summary": "Warm" },
+   { "date": "2024-10-25", "temperatureC": 40, "summary": "Bracing" },
+   { "date": "2024-10-26", "temperatureC": 22, "summary": "Warm" }
+]

@@ -1,0 +1,33 @@
+﻿@page "/counter"
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<p role="status">a random number smaller than or equal to count @random</p>
+
+@code {
+    private int currentCount = 0;
+    private int random = 0;
+    private Random r = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var storedValue = await localStore.GetItemAsync<int>("count");
+        if (storedValue != 0)
+        {
+            currentCount = storedValue;
+        }
+    }
+
+    private async Task IncrementCount()
+    {
+        currentCount++;
+        await localStore.SetItemAsync("count",currentCount);
+        random = r.Next(currentCount+1);
+    }
+}

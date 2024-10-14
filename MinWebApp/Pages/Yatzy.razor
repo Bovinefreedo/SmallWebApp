@@ -1,0 +1,215 @@
+﻿@page "/yatzy"
+@if (_playerNames == null)
+{
+    <p>There can be between 1 and 4 players, please enter the name of the players.</p>
+    <div style=" top: 200px; left: 400px; position: absolute;" >
+        <p>
+        Players:
+        <ul>
+            @for(int i=0; i < _newGamePlayers.Count; i++){
+                int copyI = i;
+                <li>
+                    <img src="/dice/remove.png" @onclick="() => removePlayer(copyI)" style="height:10px; width:auto;">
+                    @_newGamePlayers[i]
+                </li>
+            }
+        </ul>
+        </p>
+    </div>
+    <InputText @bind-Value="newPlayerName" placeHolder="Player name" style=" width: 140px; top: 355px; left: 400px; position: absolute;"> </InputText>
+    <button class=" btn btn-primary" @onclick="addPlayer" style=" top: 350px; left: 550px; position: absolute;">add player</button>
+    <div @onclick="startGame" style="background-color:forestgreen; color: white; align-content:center; text-align:center; top: 400px; left:400px; height:75px; width:350px; position:absolute;">
+        START GAME
+    </div>    
+}
+else{
+<h3>Yatzy</h3>
+
+<div id="scoreBoard" style="position: absolute">
+    @for(int i=0;i<_rules.Length;i++)
+    {
+        <div style="width: 130px; height: 30px; top: @spaceing(31,i)px; border: 1px solid black; position: absolute;  padding-left: 10px;">
+            @_rules[i] 
+        </div>    
+    }
+    @for (int j = 0; j < _playerNames.Length; j++)
+    {
+        int jCopy = j;
+        <div style="width: 85px; height: 30px; left: @(spaceing(86,j)+131)px; border: 1px solid black; position: absolute;">
+            @_playerNames[j]
+        </div>
+        @for (int i = 0; i < _rules.Length-1; i++)
+        {
+            int iCopy = i;
+            <div style="width: 85px; height: 30px; left: @(spaceing(86,j)+131)px; top: @spaceing(31,i+1)px; border: 1px solid black; position: absolute">
+                @_scoreboard[i,j]
+                <div class="scoreButton" style="background-color: forestgreen; color: white; text-align: center; width: 70px; height: 26px; left: 6.5px; top: 1px; border: 1px solid black; position: absolute; display: @(_scoreboard[i,j] == null && _playerInTurn == j ? "block" : "none"); border-radius: 10px; box-shadow: 2px 1px lime"
+                    @onclick="() => scoreCup(iCopy,jCopy)">
+                    @_scoreCup[i,j]
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div style="top:150px; left: 800px; position: absolute;"> 
+    <h1>It is @(_playerNames[_playerInTurn])'s Turn </h1> 
+</div>
+
+<img src=@_diceFace[0] @onclick="() => lockedDice(0)" style="top: 250px; left: 700px; height:150px; width:150px; position: absolute; border: 5px solid @(_lockedDice[0] ? "green": "white");" />
+<img src=@_diceFace[1] @onclick="() => lockedDice(1)" style="top: 250px; left: 860px; height:150px; width:150px; position: absolute; border: 5px solid @(_lockedDice[1] ? "green": "white");" />
+<img src=@_diceFace[2] @onclick="() => lockedDice(2)" style="top: 250px; left: 1020px;height:150px; width:150px; position: absolute; border: 5px solid @(_lockedDice[2] ? "green": "white");" />
+<img src=@_diceFace[3] @onclick="() => lockedDice(3)" style="top: 410px; left: 775px; height:150px; width:150px; position: absolute; border: 5px solid @(_lockedDice[3] ? "green": "white");" />
+<img src=@_diceFace[4] @onclick="() => lockedDice(4)" style="top: 410px; left: 935px; height:150px; width:150px; position: absolute; border: 5px solid @(_lockedDice[4] ? "green": "white");" />
+
+<div style="background-color:rgb(0,90,181); color: white; align-content:center; text-align:center; top: 600px; left:750px; height:75px; width:350px; position:absolute;" @onclick="roll">
+    @_rollButtonText
+</div>
+
+<div style="background: rgba(0,0,0,0.2); width:2500px; height: 800px; top:0px; left:0px; position:absolute; z-index:0; display: @(_showOptions ? "block":"none");">
+    <div style="top:100px; left:500px; width:400px; height:500px; background-color:aquamarine; position:absolute;">
+        Options
+        <div style="top:100px; left:50px; width:300px; height:75px; background-color:green; position:absolute;">
+            Restart
+        </div>
+        <div style="top:200px; left:50px; width:300px; height:75px; background-color:green; position:absolute;">
+            New Game
+        </div>
+        <div style="top:300px; left:50px; width:300px; height:75px; background-color:green; position:absolute;">
+            Rename players
+        </div>
+    </div>
+</div>
+
+<img src="/dice/options.png" @onclick="showOptions" style="top: 80px; left: 1200px; width: 75px; height:75px; position:absolute;" />
+}
+
+@code {
+    public string[] _rules = { "", "Aces", "Twos", "Threes", "Fours", "Fives", "Sixes", "Sum", "Bonus", "Pair", "Two Pair", "Three of a Kind", "Four of a Kind", "Full House", "Small Straight", "Large Straight", "Yatzy", "Chance", "Total" };
+    public string[]? _playerNames;
+    public List<string> _newGamePlayers = new List<string>();
+    public string? newPlayerName;
+    public string[,] _scoreboard = new string[18, 4];
+    public string[,] _scoreCup = new string[18, 4];
+    public int _playerInTurn = 0;
+    public string[] _diceFace = new string[] { "/dice/dice1.png", "/dice/dice2.png", "/dice/dice1.png", "/dice/dice1.png", "/dice/dice1.png" };
+    public bool[] _lockedDice = new bool[5];
+    public int _rollsThisTurn = 0;
+    public int _round = 1;
+    public string _rollButtonText = "Roll";
+    public bool _showOptions = false;
+    public string[] _colorScheme = new string[5] { "FABC3F", "E85C0D", "C7253E", "821131", "white" };
+    public YatzyIMPL yatzy = new YatzyIMPL(4);
+
+    public void removePlayer(int i)
+    {
+        _newGamePlayers.RemoveAt(i);    
+    }
+
+    public void addPlayer()
+    {
+        if (_newGamePlayers.Count >= 6) { return; }
+        _newGamePlayers.Add(newPlayerName);
+        newPlayerName = "";
+    }
+
+    public void newGame()
+    {
+        
+        _playerNames = null;    
+    }
+
+    public void startGame()
+    {
+        if (_newGamePlayers.Count == 0) { return; }
+        _playerNames = _newGamePlayers.ToArray();
+        _scoreboard = new string[18, _playerNames.Length];
+        _scoreCup = new string[18, _playerNames.Length];
+        yatzy = new YatzyIMPL(_playerNames.Length);
+        _playerInTurn = 0;
+        _rollsThisTurn = 0;
+        _lockedDice = new bool[5];
+        roll();
+        for (int i = 0; i < _playerNames.Length; i++)
+        {
+            _scoreboard[6, i] = yatzy.scoreCup(7).ToString();
+            _scoreboard[7, i] = yatzy.scoreCup(8).ToString();
+            _scoreboard[17, i] = yatzy.scoreCup(18).ToString();
+        }
+    }
+
+    public void showOptions()
+    {
+        _showOptions = true;
+    }
+
+    public int spaceing(int n, int i)
+    {
+        return n * i;
+    }
+
+    public void scoreCup(int rule, int player)
+    {
+        if (_showOptions) { return; }
+        _scoreboard[rule, player] = yatzy.scoreCup(rule+1).ToString();
+        yatzy.awardPoints(rule + 1);   
+        updateTotalSum();
+
+        if (_playerInTurn < _playerNames.Length-1)
+            _playerInTurn++;
+        else
+            _playerInTurn=0;
+
+        for(int i = 0; i<_lockedDice.Length;i++)
+        {
+            _lockedDice[i] = false;        
+        }
+        yatzy.nextPlayer();
+        _rollsThisTurn = 0;
+        roll();
+    }
+
+    public void updateTotalSum()
+    {
+        _scoreboard[6, _playerInTurn] = yatzy.scoreCup(7).ToString();
+        _scoreboard[7, _playerInTurn] = yatzy.scoreCup(8).ToString();
+        _scoreboard[17, _playerInTurn] = yatzy.scoreCup(18).ToString();
+    }
+
+    public void roll()
+    {
+        if (_rollsThisTurn == 3 || _showOptions || _round>15) { return; }
+        yatzy.roll(_lockedDice);
+        for (int i = 0; i < 5; i++)
+        {
+            _diceFace[i] = $"/dice/dice{yatzy.getEyes(i)}.png";
+        }
+        for (int i = 0; i < 18; i++)
+        {
+            _scoreCup[i, _playerInTurn] = $"+{yatzy.scoreCup(i + 1)}";
+        }
+        _rollsThisTurn++;
+        if (_rollsThisTurn < 3)
+            _rollButtonText = $"Roll - {3 - _rollsThisTurn} remaining";
+        else
+            _rollButtonText = "No more rolls - score your cup";
+    }
+
+    public void lockedDice(int dice)
+    {
+        _lockedDice[dice] = !_lockedDice[dice];
+    }
+
+    public void switchColorSchema(int schema)
+    {
+        switch (schema)
+        {
+            case 1: //gold rush
+                _colorScheme = new string[5] { "FABC3F", "E85C0D", "C7253E", "821131", "white" }; 
+                return;
+            default: 
+                return;
+        }
+    } 
+
+}
