@@ -1,0 +1,36 @@
+﻿@page "/viewproduct"
+@inject Blazored.LocalStorage.ILocalStorageService store;
+<h3>ViewProduct</h3>
+@if(products != null){
+<table>
+    @foreach (Product p in products)
+    {
+        <tr>
+            <td> @p.Name </td>
+            <td> @p.Price </td>
+            <td> @p.PublishedDate </td>
+            <td> @p.Description </td>
+        </tr>
+    }
+    </table>
+}
+else
+{
+    <p> No products found </p>    
+}
+
+@code {
+    private List<Product> products;
+    protected override async Task OnInitializedAsync()
+    {
+        var storeValues = await store.GetItemAsync<List<Product>>("products");
+        if (storeValues == null)
+        {
+            products = new List<Product>();
+        }
+        else
+        {
+            products = storeValues;
+        }
+    }
+}
